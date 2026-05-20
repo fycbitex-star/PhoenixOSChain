@@ -1,52 +1,100 @@
 # PhoenixOSChain
 
+[![Layer 1](https://img.shields.io/badge/network-sovereign%20L1-09111f?style=for-the-badge)](docs/WHY_PHOENIXCHAIN.md)
+[![Validator Runtime](https://img.shields.io/badge/security-validator--aware-0f172a?style=for-the-badge)](docs/VALIDATOR_NETWORK.md)
+[![Governance Runtime](https://img.shields.io/badge/governance-treasury%20aware-111827?style=for-the-badge)](docs/GOVERNANCE_AND_TREASURY.md)
+[![Source Available](https://img.shields.io/badge/license-PolyForm%20Strict-1f2937?style=for-the-badge)](LICENSE)
+
 PhoenixOSChain is the public repository for **PhoenixChain**: a financial-infrastructure-first Layer 1 designed to sit beside PhoenixOS as its sovereign settlement, governance, validator, treasury, and asset runtime.
 
-This repository is meant to do two things at once:
+This repository is built to create a very specific reaction:
 
-1. make the architecture visible enough that serious operators, builders, and researchers immediately understand the ambition
-2. keep commercial control, derivative rights, and product ownership with the PhoenixOS/PhoenixChain rights holder
+- strong enough that serious builders, operators, and investors immediately understand the ambition
+- disciplined enough that the codebase does not give away the commercial right to clone the product
 
-## What PhoenixChain Is
+## The Pitch
 
-PhoenixChain is being built as a chain for:
+PhoenixChain is not trying to be one more token shell.
+
+It is being built as a chain for:
 
 - validator-secured financial infrastructure
 - governance-aware treasury coordination
-- PHX-native economic policy
+- PHX-native monetary policy
 - PHX-20 asset issuance and lifecycle support
 - wallet, explorer, validator, and execution interoperability with PhoenixOS
 
-It is **not** positioned as a meme chain, marketing-only chain, or thin wrapper around an existing dashboard product.
+It is **not** positioned as:
+
+- a meme chain
+- a dashboard skin over somebody else's network
+- fake decentralization theater
+- a token page pretending to be infrastructure
 
 ## Why This Exists
 
-PhoenixOS grew beyond a single trading interface.
+PhoenixOS outgrew the boundaries of a single trading interface.
 
-Once execution, OMS, wallet, governance, AI, replay, collaboration, and treasury coordination became part of the same operating system, the platform needed a chain layer that could eventually carry:
+Once execution, OMS, wallet, governance, AI, replay, collaboration, and treasury coordination became part of the same operating system, the platform needed a sovereign trust layer that could eventually carry:
 
-- sovereign asset logic
+- protocol identity
 - validator identity
-- treasury governance
-- protocol decisions
+- treasury legitimacy
+- chain-native governance
 - public financial infrastructure credibility
 
 PhoenixChain is that layer.
 
-## Design Direction
+## Architecture At A Glance
 
-- sovereign chain, not an Ethereum L2
-- Ethereum-style compatibility where it improves operator and wallet ergonomics
-- native monetary identity through `PHX`
-- validator-first network posture
-- governance and treasury hardening as first-class system concerns
-- truth-first visibility over fake decentralization or fake performance claims
+```mermaid
+flowchart TD
+    A[PhoenixOS] --> B[Execution and OMS]
+    A --> C[Wallet OS]
+    A --> D[AI and Replay]
+    A --> E[Operator Control]
+
+    F[PhoenixChain] --> G[Chain Core]
+    F --> H[Validator Network]
+    F --> I[Governance Runtime]
+    F --> J[Treasury Safety]
+    F --> K[PHX and PHX-20]
+    F --> L[Explorer and RPC]
+
+    B --> F
+    C --> F
+    D --> F
+    E --> F
+```
+
+## Strategic Pillars
+
+### 1. Validator-Centered Security
+
+PhoenixChain is intentionally designed to feel like a chain with operators, health, lifecycle, and accountability. Validator surfaces are not decorative explorer cards.
+
+### 2. Governance as Runtime
+
+Proposal lifecycle, voting posture, treasury safety, audit trail, and execution delay are treated as chain-level responsibilities, not DAO cosmetics.
+
+### 3. Monetary Clarity
+
+The project prefers explicit monetary architecture over vague token marketing. PHX is positioned as protocol infrastructure, not a narrative prop.
+
+### 4. Institutional Language
+
+This repository tries to sound like infrastructure:
+
+- what exists
+- what is partial
+- what is blocked
+- what still needs audit, rehearsal, and launch discipline
 
 ## Current State
 
 PhoenixChain is **advanced devnet / governance-runtime prototype software**.
 
-It includes real code for:
+It already contains real code for:
 
 - chain state and block flow
 - validator-facing devnet operations
@@ -54,18 +102,18 @@ It includes real code for:
 - PHX-20 runtime surfaces
 - RPC and explorer-style routes
 - wallet/account primitives
-- security and operational documentation
+- operational and security documentation
 
 It is **not yet a production mainnet**.
 
-## Repository Structure
+## Repository Layout
 
 - `cmd/phoenixd`
   node binary and CLI entrypoint
 - `internal/chain`
   block, genesis, validation, and chain state flow
 - `internal/consensus`
-  current consensus foundations
+  consensus foundations
 - `internal/governance`
   proposal, audit, and governance runtime foundations
 - `internal/phx20`
@@ -83,37 +131,27 @@ It is **not yet a production mainnet**.
 - `deploy`
   deploy scaffolding
 
-## Strategic Pillars
+## Start Here
 
-### 1. Validator-Centered Security
+If this is your first time seeing the project, read in this order:
 
-PhoenixChain is intentionally designed to feel like a chain with operators, health, lifecycle, and accountability. Validator surfaces are not treated as decorative explorer add-ons.
+1. [Why PhoenixChain Exists](docs/WHY_PHOENIXCHAIN.md)
+2. [Architecture Overview](docs/ARCHITECTURE_OVERVIEW.md)
+3. [Validator Network](docs/VALIDATOR_NETWORK.md)
+4. [Governance and Treasury](docs/GOVERNANCE_AND_TREASURY.md)
+5. [Security Posture](docs/SECURITY_POSTURE.md)
+6. [Mainnet Discipline](docs/MAINNET_DISCIPLINE.md)
+7. [First Public Release Notes](docs/FIRST_PUBLIC_RELEASE.md)
 
-### 2. Governance as Runtime, Not Decoration
+## Deep Reading
 
-Proposal lifecycle, voting posture, treasury safety, audit trail, and execution delay are treated as chain-level responsibilities, not just a DAO UI skin.
-
-### 3. Monetary Clarity
-
-The project prefers explicit monetary architecture over vague token marketing. PHX is positioned as a protocol-native asset with clear infrastructure role.
-
-### 4. Institutional Operating Language
-
-The repository and public documentation aim to communicate like infrastructure, not hype:
-
-- what exists
-- what is partial
-- what is blocked
-- what still requires audit, rehearsal, and launch discipline
-
-## What Makes It Interesting
-
-PhoenixChain is not only a chain repository. It is the chain half of a larger operating civilization:
-
-- PhoenixOS handles execution, AI, replay, wallet, OMS, and operator tooling
-- PhoenixChain carries the network, validator, governance, treasury, and asset trust boundary
-
-That pairing is the real differentiator.
+- [Protocol](docs/protocol.md)
+- [PHX Monetary Architecture](docs/PHX_MONETARY_ARCHITECTURE.md)
+- [PHX-20 Standard](docs/PHX20_STANDARD.md)
+- [Threat Model](docs/threat-model.md)
+- [Validator Operations](docs/validator-operations.md)
+- [Mainnet Readiness](docs/mainnet-readiness.md)
+- [Publish Checklist](docs/PUBLISH_CHECKLIST.md)
 
 ## Build
 
@@ -130,16 +168,15 @@ go run ./cmd/phoenixd start --config configs/devnet-node-1.yaml
 go run ./cmd/phoenixd devnet bootstrap --genesis configs/devnet.genesis.json --env .env.devnet --wallet-dir .phoenixchain/wallets
 ```
 
-## Public Documentation Map
+## Why This Repo Should Matter
 
-Start here:
+PhoenixChain is not only a chain repository.
+It is the chain half of a larger operating civilization:
 
-- [docs/WHY_PHOENIXCHAIN.md](docs/WHY_PHOENIXCHAIN.md)
-- [docs/ARCHITECTURE_OVERVIEW.md](docs/ARCHITECTURE_OVERVIEW.md)
-- [docs/GOVERNANCE_AND_TREASURY.md](docs/GOVERNANCE_AND_TREASURY.md)
-- [docs/VALIDATOR_NETWORK.md](docs/VALIDATOR_NETWORK.md)
-- [docs/SECURITY_POSTURE.md](docs/SECURITY_POSTURE.md)
-- [docs/MAINNET_DISCIPLINE.md](docs/MAINNET_DISCIPLINE.md)
+- PhoenixOS handles execution, AI, replay, wallet, OMS, and operator tooling
+- PhoenixChain carries network trust, validator identity, governance legitimacy, treasury discipline, and asset runtime
+
+That pairing is the difference.
 
 ## License
 
