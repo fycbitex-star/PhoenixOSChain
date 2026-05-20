@@ -1,0 +1,10 @@
+node_id: node-2
+role: validator
+data_dir: /data/node-2
+rpc_addr: 0.0.0.0:8545
+p2p_addr: http://node-2:8545
+genesis: configs/devnet.genesis.json
+block_time_seconds: 3
+validator_key_env: PHX_NODE2_VALIDATOR_KEY
+validators: ["${PHX_NODE1_VALIDATOR_ADDRESS}", "${PHX_NODE2_VALIDATOR_ADDRESS}"]
+peers: ["http://node-1:8545", "http://node-3:8545"]

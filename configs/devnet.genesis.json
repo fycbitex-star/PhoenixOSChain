@@ -1,0 +1,21 @@
+{
+  "name": "PhoenixChain Devnet",
+  "chainId": 20260518,
+  "networkId": 20260518,
+  "nativeCurrency": {
+    "name": "Phoenix",
+    "symbol": "PHX",
+    "decimals": 18,
+    "maxSupply": 30000000
+  },
+  "consensus": {
+    "type": "poa",
+    "blockTimeSeconds": 3,
+    "validators": []
+  },
+  "alloc": {},
+  "params": {
+    "gasLimit": 30000000,
+    "baseFeeWei": "1000000000"
+  }
+}

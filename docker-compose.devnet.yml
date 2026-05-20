@@ -1,0 +1,50 @@
+version: "3.3"
+
+services:
+  node-1:
+    build: .
+    command: ["start", "--config", "configs/devnet-node-1.docker.yaml"]
+    environment:
+      PHX_NODE1_VALIDATOR_KEY: ${PHX_NODE1_VALIDATOR_KEY}
+      PHX_NODE2_VALIDATOR_KEY: ${PHX_NODE2_VALIDATOR_KEY}
+      PHX_NODE1_VALIDATOR_ADDRESS: ${PHX_NODE1_VALIDATOR_ADDRESS}
+      PHX_NODE2_VALIDATOR_ADDRESS: ${PHX_NODE2_VALIDATOR_ADDRESS}
+      PHX_DEV_WALLET_KEY: ${PHX_DEV_WALLET_KEY}
+      PHX_FAUCET_KEY: ${PHX_FAUCET_KEY}
+    ports:
+      - "8545:8545"
+    volumes:
+      - node1-data:/data/node-1
+
+  node-2:
+    build: .
+    command: ["start", "--config", "configs/devnet-node-2.docker.yaml"]
+    environment:
+      PHX_NODE1_VALIDATOR_KEY: ${PHX_NODE1_VALIDATOR_KEY}
+      PHX_NODE2_VALIDATOR_KEY: ${PHX_NODE2_VALIDATOR_KEY}
+      PHX_NODE1_VALIDATOR_ADDRESS: ${PHX_NODE1_VALIDATOR_ADDRESS}
+      PHX_NODE2_VALIDATOR_ADDRESS: ${PHX_NODE2_VALIDATOR_ADDRESS}
+      PHX_DEV_WALLET_KEY: ${PHX_DEV_WALLET_KEY}
+      PHX_FAUCET_KEY: ${PHX_FAUCET_KEY}
+    ports:
+      - "8546:8545"
+    volumes:
+      - node2-data:/data/node-2
+
+  node-3:
+    build: .
+    command: ["start", "--config", "configs/devnet-node-3.docker.yaml"]
+    environment:
+      PHX_NODE1_VALIDATOR_ADDRESS: ${PHX_NODE1_VALIDATOR_ADDRESS}
+      PHX_NODE2_VALIDATOR_ADDRESS: ${PHX_NODE2_VALIDATOR_ADDRESS}
+      PHX_DEV_WALLET_KEY: ${PHX_DEV_WALLET_KEY}
+      PHX_FAUCET_KEY: ${PHX_FAUCET_KEY}
+    ports:
+      - "8547:8545"
+    volumes:
+      - node3-data:/data/node-3
+
+volumes:
+  node1-data:
+  node2-data:
+  node3-data:

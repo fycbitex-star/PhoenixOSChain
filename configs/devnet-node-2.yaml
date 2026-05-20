@@ -1,0 +1,10 @@
+node_id: node-2
+role: validator
+data_dir: .phoenixchain/node-2
+rpc_addr: 127.0.0.1:8546
+p2p_addr: http://127.0.0.1:8546
+genesis: configs/devnet.genesis.json
+block_time_seconds: 3
+validator_key_env: PHX_NODE2_VALIDATOR_KEY
+validators: ["${PHX_NODE1_VALIDATOR_ADDRESS}", "${PHX_NODE2_VALIDATOR_ADDRESS}"]
+peers: ["http://127.0.0.1:8545", "http://127.0.0.1:8547"]

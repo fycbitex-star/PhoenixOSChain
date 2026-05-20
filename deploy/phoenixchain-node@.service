@@ -1,0 +1,17 @@
+[Unit]
+Description=PhoenixChain Devnet Node %i
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/phoenixchain/devnet.env
+WorkingDirectory=/opt/phoenixchain
+ExecStart=/opt/phoenixchain/bin/phoenixd start --config /opt/phoenixchain/configs/server-node-%i.yaml
+Restart=always
+RestartSec=3
+LimitNOFILE=65535
+RuntimeMaxSec=7d
+
+[Install]
+WantedBy=multi-user.target
