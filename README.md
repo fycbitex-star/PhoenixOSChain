@@ -148,6 +148,8 @@ If this is your first time seeing the project, read in this order:
 
 - [Protocol](docs/protocol.md)
 - [PHX Monetary Architecture](docs/PHX_MONETARY_ARCHITECTURE.md)
+- [Canonical Asset and Contract Strategy](docs/CANONICAL_ASSET_AND_CONTRACT_STRATEGY.md)
+- [PHX Contract Launch Checklist](docs/PHX_CONTRACT_LAUNCH_CHECKLIST.md)
 - [PHX-20 Standard](docs/PHX20_STANDARD.md)
 - [Threat Model](docs/threat-model.md)
 - [Validator Operations](docs/validator-operations.md)

@@ -27,6 +27,7 @@ PhoenixChain is currently organized around several institutional concerns:
 ## Asset Layer
 
 - native PHX monetary architecture
+- canonical native-asset-first contract strategy
 - PHX-20 token runtime
 - explorer and wallet visibility
 
