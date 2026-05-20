@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security disclosure
+    url: https://github.com/fycbitex-star/PhoenixOSChain/security
+    about: Do not report vulnerabilities publicly.
+  - name: Architecture discussions
+    url: https://github.com/fycbitex-star/PhoenixOSChain/discussions
+    about: Use discussions for architecture, validator, and governance questions.
