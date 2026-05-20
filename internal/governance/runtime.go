@@ -1,6 +1,8 @@
 package governance
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"sort"
 	"strings"
@@ -123,6 +125,20 @@ type ProposalView struct {
 	CommunityVotes     int
 	QueueState         string
 	QueueBlockedReason string
+	ImpactReceipt      ImpactReceipt
+}
+
+type ImpactReceipt struct {
+	ProposalID           string   `json:"proposal_id"`
+	ReceiptID            string   `json:"receipt_id"`
+	ImpactClass          string   `json:"impact_class"`
+	ExecutionCriticality string   `json:"execution_criticality"`
+	BlastRadius          string   `json:"blast_radius"`
+	SafetyPosture        string   `json:"safety_posture"`
+	AffectedSurfaces     []string `json:"affected_surfaces,omitempty"`
+	Preconditions        []string `json:"preconditions,omitempty"`
+	Blockers             []string `json:"blockers,omitempty"`
+	Digest               string   `json:"digest"`
 }
 
 type TreasurySurface struct {
@@ -165,6 +181,7 @@ type RuntimeSummary struct {
 	GovernanceHealth  string
 	ValidatorActivity string
 	TreasurySafety    string
+	ImpactReceipts    string
 }
 
 type Manager struct {
@@ -275,6 +292,16 @@ func (m *Manager) TreasurySurface() TreasurySurface {
 	}
 }
 
+func (m *Manager) ImpactReceipts() []ImpactReceipt {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
+	out := make([]ImpactReceipt, 0, len(m.order))
+	for _, id := range m.order {
+		out = append(out, m.impactReceiptLocked(m.proposals[id]))
+	}
+	return out
+}
+
 func (m *Manager) ValidatorParticipation(address string) ValidatorParticipation {
 	m.mu.RLock()
 	defer m.mu.RUnlock()
@@ -345,6 +372,7 @@ func (m *Manager) Summary() RuntimeSummary {
 		GovernanceHealth:  health,
 		ValidatorActivity: fmt.Sprintf("%d validator vote records", validatorVotes),
 		TreasurySafety:    fmt.Sprintf("%d treasury action previews blocked behind queue safety", len(m.treasuryActions)),
+		ImpactReceipts:    fmt.Sprintf("%d governance impact receipts derived from runtime state", len(m.order)),
 	}
 }
 
@@ -555,7 +583,130 @@ func (m *Manager) buildProposalViewLocked(proposal Proposal) ProposalView {
 	queueState, blockedReason := m.queueStateLocked(proposal)
 	view.QueueState = queueState
 	view.QueueBlockedReason = blockedReason
+	view.ImpactReceipt = m.impactReceiptLocked(proposal)
 	return view
+}
+
+func (m *Manager) impactReceiptLocked(proposal Proposal) ImpactReceipt {
+	queueState, blockedReason := m.queueStateLocked(proposal)
+	surfaces := impactSurfaces(proposal)
+	preconditions := impactPreconditions(proposal, queueState)
+	blockers := impactBlockers(proposal, blockedReason)
+	impactClass, criticality, blastRadius := impactClassification(proposal)
+	safetyPosture := "runtime-visible but blocked until governance power, queue posture and safety conditions align"
+	if proposal.Status == StatusCanceled {
+		safetyPosture = "archived before activation to avoid fake governance continuity"
+	} else if queueState == string(QueueStateExecuted) {
+		safetyPosture = "executed and audit-visible"
+	}
+	receiptID := "IMPACT-" + strings.ToUpper(proposal.ProposalID)
+	digest := impactDigest(proposal, surfaces, preconditions, blockers, impactClass, criticality, blastRadius, safetyPosture)
+	return ImpactReceipt{
+		ProposalID:           proposal.ProposalID,
+		ReceiptID:            receiptID,
+		ImpactClass:          impactClass,
+		ExecutionCriticality: criticality,
+		BlastRadius:          blastRadius,
+		SafetyPosture:        safetyPosture,
+		AffectedSurfaces:     surfaces,
+		Preconditions:        preconditions,
+		Blockers:             blockers,
+		Digest:               digest,
+	}
+}
+
+func impactClassification(proposal Proposal) (string, string, string) {
+	switch proposal.Type {
+	case "treasury allocation":
+		return "capital governance", "high", "treasury, ecosystem allocation and trust posture"
+	case "validator policy":
+		return "validator coordination", "medium", "validator identity, participation discipline and governance trust"
+	case "runtime upgrade":
+		return "protocol integrity", "critical", "runtime continuity, validator coordination and operational recovery"
+	case "security emergency":
+		return "security response", "critical", "runtime safety and emergency governance posture"
+	case "PHX-20 ecosystem decision":
+		return "ecosystem signaling", "low", "ecosystem coordination and token-standard direction"
+	default:
+		return "governance coordination", "medium", "governance process and operator trust"
+	}
+}
+
+func impactSurfaces(proposal Proposal) []string {
+	base := []string{"governance audit trail", "governance queue discipline"}
+	switch proposal.Type {
+	case "treasury allocation":
+		return append(base, "treasury safety", "recipient validation", "ecosystem allocation policy")
+	case "validator policy":
+		return append(base, "validator identity", "validator reliability posture", "governance participation policy")
+	case "runtime upgrade":
+		return append(base, "runtime continuity", "upgrade timelock", "operator recovery posture")
+	case "security emergency":
+		return append(base, "emergency controls", "runtime safety", "operator escalation")
+	case "PHX-20 ecosystem decision":
+		return append(base, "ecosystem coordination", "PHX-20 policy")
+	default:
+		return append(base, "general governance posture")
+	}
+}
+
+func impactPreconditions(proposal Proposal, queueState string) []string {
+	preconditions := []string{
+		"proposal lifecycle must remain persisted and audit-visible",
+		"proposal-specific quorum and threshold posture must remain truthful",
+	}
+	if proposal.Status != StatusDraft && proposal.Status != StatusCanceled {
+		preconditions = append(preconditions, "voting power must be published before settlement")
+	}
+	if proposal.Type == "treasury allocation" {
+		preconditions = append(preconditions,
+			"recipient validation must pass before queue eligibility",
+			"execution delay must remain enforced before movement",
+		)
+	}
+	if proposal.Type == "runtime upgrade" || queueState == string(QueueStateTimelockPending) {
+		preconditions = append(preconditions, "timelock and recovery posture must stay operator-visible")
+	}
+	return preconditions
+}
+
+func impactBlockers(proposal Proposal, blockedReason string) []string {
+	blockers := make([]string, 0, 4)
+	if proposal.Status != StatusCanceled && proposal.Status != StatusDraft {
+		blockers = append(blockers, "live weighted voting power is not published")
+	}
+	if blockedReason != "" {
+		blockers = append(blockers, blockedReason)
+	}
+	if proposal.Type == "treasury allocation" {
+		blockers = append(blockers, "treasury execution remains preview-only")
+	}
+	if proposal.Type == "runtime upgrade" {
+		blockers = append(blockers, "runtime upgrade execution is intentionally queue-blocked")
+	}
+	if proposal.Status == StatusCanceled {
+		blockers = append(blockers, "proposal intentionally archived before activation")
+	}
+	return blockers
+}
+
+func impactDigest(proposal Proposal, surfaces, preconditions, blockers []string, impactClass, criticality, blastRadius, safetyPosture string) string {
+	payload := strings.Join([]string{
+		proposal.ProposalID,
+		proposal.Type,
+		string(proposal.Status),
+		proposal.ExecutionState,
+		proposal.TimelockState,
+		impactClass,
+		criticality,
+		blastRadius,
+		safetyPosture,
+		strings.Join(surfaces, "|"),
+		strings.Join(preconditions, "|"),
+		strings.Join(blockers, "|"),
+	}, "||")
+	sum := sha256.Sum256([]byte(payload))
+	return "sha256:" + hex.EncodeToString(sum[:16])
 }
 
 func (m *Manager) queueStateLocked(proposal Proposal) (string, string) {

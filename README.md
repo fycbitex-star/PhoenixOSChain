@@ -75,7 +75,7 @@ PhoenixChain is intentionally designed to feel like a chain with operators, heal
 
 ### 2. Governance as Runtime
 
-Proposal lifecycle, voting posture, treasury safety, audit trail, and execution delay are treated as chain-level responsibilities, not DAO cosmetics.
+Proposal lifecycle, voting posture, treasury safety, audit trail, execution delay, and governance impact receipts are treated as chain-level responsibilities, not DAO cosmetics.
 
 ### 3. Monetary Clarity
 
@@ -115,7 +115,7 @@ It is **not yet a production mainnet**.
 - `internal/consensus`
   consensus foundations
 - `internal/governance`
-  proposal, audit, and governance runtime foundations
+  proposal, audit, queue, and governance impact runtime foundations
 - `internal/phx20`
   PHX-20 asset runtime
 - `internal/rpc`
@@ -139,9 +139,10 @@ If this is your first time seeing the project, read in this order:
 2. [Architecture Overview](docs/ARCHITECTURE_OVERVIEW.md)
 3. [Validator Network](docs/VALIDATOR_NETWORK.md)
 4. [Governance and Treasury](docs/GOVERNANCE_AND_TREASURY.md)
-5. [Security Posture](docs/SECURITY_POSTURE.md)
-6. [Mainnet Discipline](docs/MAINNET_DISCIPLINE.md)
-7. [First Public Release Notes](docs/FIRST_PUBLIC_RELEASE.md)
+5. [Governance Impact Receipts](docs/GOVERNANCE_IMPACT_RECEIPTS.md)
+6. [Security Posture](docs/SECURITY_POSTURE.md)
+7. [Mainnet Discipline](docs/MAINNET_DISCIPLINE.md)
+8. [First Public Release Notes](docs/FIRST_PUBLIC_RELEASE.md)
 
 ## Deep Reading
 
