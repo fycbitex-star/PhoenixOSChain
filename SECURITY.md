@@ -47,3 +47,7 @@ Public publication should explain the system clearly without turning the reposit
 
 Architectural clarity is public.
 Operational secrets are not.
+
+## Operator Checklist
+
+Use [docs/REPOSITORY_SECURITY_CHECKLIST.md](docs/REPOSITORY_SECURITY_CHECKLIST.md) before every public push, release, and documentation update.
