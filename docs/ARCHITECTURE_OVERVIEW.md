@@ -22,10 +22,12 @@ PhoenixChain is currently organized around several institutional concerns:
 - voting records and audit trail foundations
 - treasury safety posture
 - execution-queue and timelock direction
+- governance impact receipts for consequence and blast-radius visibility
 
 ## Asset Layer
 
 - native PHX monetary architecture
+- canonical native-asset-first contract strategy
 - PHX-20 token runtime
 - explorer and wallet visibility
 

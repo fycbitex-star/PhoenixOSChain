@@ -11,6 +11,7 @@ import (
 type governancePortalData struct {
 	Summary        governance.RuntimeSummary
 	Proposals      []governance.ProposalView
+	ImpactReceipts []governance.ImpactReceipt
 	Treasury       governance.TreasurySurface
 	AuditTrail     []governance.AuditEntry
 	Audit          []governance.RuntimeAuditItem
@@ -21,6 +22,7 @@ func (s *Server) governanceData() governancePortalData {
 	return governancePortalData{
 		Summary:        s.governance.Summary(),
 		Proposals:      s.governance.Proposals(),
+		ImpactReceipts: s.governance.ImpactReceipts(),
 		Treasury:       s.governance.TreasurySurface(),
 		AuditTrail:     governance.SortAuditTrail(s.governance.PublicAuditTrail()),
 		Audit:          governance.RuntimeAudit(),
@@ -75,6 +77,7 @@ func (s *Server) handleGovernanceProposals(w http.ResponseWriter, r *http.Reques
   <div class="metric"><div class="label">Queued</div><div class="value">{{index .GovernanceRuntime.Summary.Counts "queued"}}</div></div>
   <div class="metric"><div class="label">Executed</div><div class="value">{{index .GovernanceRuntime.Summary.Counts "executed"}}</div></div>
   <div class="metric"><div class="label">Voting Power</div><div class="value">{{.GovernanceRuntime.Summary.PowerState}}</div></div>
+  <div class="metric"><div class="label">Impact Receipts</div><div class="value">{{.GovernanceRuntime.Summary.ImpactReceipts}}</div></div>
 </section>
 <div class="panel">
   <p>This explorer now reads persisted governance runtime records rather than helper-only architecture examples.</p>
@@ -82,6 +85,12 @@ func (s *Server) handleGovernanceProposals(w http.ResponseWriter, r *http.Reques
 </div>
 <div class="portal-actions" style="margin-bottom:12px"><a class="portal-button" href="/governance">Governance Home</a><a class="portal-button secondary" href="/governance/treasury">Treasury Safety</a><a class="portal-button ghost" href="/governance/audit">Audit Trail</a></div>
 <table><tr><th>ID</th><th>Title</th><th>Type</th><th>Status</th><th>Quorum Required</th><th>Participation</th><th>Queue</th><th>Execution</th></tr>{{range .GovernanceRuntime.Proposals}}<tr><td><a href="/governance/proposals/{{.ProposalID}}">{{.ProposalID}}</a></td><td><a href="/governance/proposals/{{.ProposalID}}">{{.Title}}</a></td><td>{{.Type}}</td><td><span class="tag">{{.Status}}</span></td><td>{{.QuorumRequired}}</td><td>{{.ParticipationRatio}}</td><td>{{.QueueState}}</td><td>{{.ExecutionState}}</td></tr>{{else}}<tr><td colspan="8" class="muted">No governance runtime records available.</td></tr>{{end}}</table>
+<div class="section-title"><h2>Governance Impact Receipts</h2><span class="muted">Proposal causality and blast-radius surface</span></div>
+<div class="panel">
+  <p>Each proposal now derives a deterministic impact receipt so governance can be evaluated as infrastructure, not just voting theater.</p>
+  <p class="muted">Receipts do not claim execution finality. They standardize what a proposal touches, what must be true before execution, and what is still blocking it.</p>
+</div>
+<table><tr><th>Receipt</th><th>Proposal</th><th>Impact Class</th><th>Criticality</th><th>Blast Radius</th><th>Digest</th></tr>{{range .GovernanceRuntime.ImpactReceipts}}<tr><td>{{.ReceiptID}}</td><td><a href="/governance/proposals/{{.ProposalID}}">{{.ProposalID}}</a></td><td>{{.ImpactClass}}</td><td>{{.ExecutionCriticality}}</td><td>{{.BlastRadius}}</td><td class="hash">{{.Digest}}</td></tr>{{else}}<tr><td colspan="6" class="muted">No impact receipts derived.</td></tr>{{end}}</table>
 {{end}}`, data)
 }
 
@@ -143,6 +152,16 @@ func (s *Server) handleGovernanceProposalDetail(w http.ResponseWriter, r *http.R
 {{end}}
 <div class="section-title"><h2>Audit Trail</h2><span class="muted">Public governance movement history</span></div>
 <table><tr><th>Time</th><th>Action</th><th>Actor</th><th>Severity</th><th>Summary</th></tr>{{range .GovernanceProposal.AuditTrail}}<tr><td>{{.Timestamp}}</td><td>{{.Action}}</td><td>{{.Actor}}</td><td>{{.Severity}}</td><td>{{.Summary}}</td></tr>{{else}}<tr><td colspan="5" class="muted">No public audit entries recorded.</td></tr>{{end}}</table>
+<div class="section-title"><h2>Governance Impact Receipt</h2><span class="muted">Deterministic infrastructure impact record</span></div>
+<div class="panel">
+  <p>Receipt ID: {{.GovernanceProposal.ImpactReceipt.ReceiptID}}</p>
+  <p>Impact class: {{.GovernanceProposal.ImpactReceipt.ImpactClass}}</p>
+  <p>Execution criticality: {{.GovernanceProposal.ImpactReceipt.ExecutionCriticality}}</p>
+  <p>Blast radius: {{.GovernanceProposal.ImpactReceipt.BlastRadius}}</p>
+  <p>Safety posture: {{.GovernanceProposal.ImpactReceipt.SafetyPosture}}</p>
+  <p>Digest: <span class="hash">{{.GovernanceProposal.ImpactReceipt.Digest}}</span></p>
+</div>
+<table><tr><th>Affected Surfaces</th><th>Preconditions</th><th>Blockers</th></tr><tr><td>{{range .GovernanceProposal.ImpactReceipt.AffectedSurfaces}}<div>{{.}}</div>{{else}}<div class="muted">none recorded</div>{{end}}</td><td>{{range .GovernanceProposal.ImpactReceipt.Preconditions}}<div>{{.}}</div>{{else}}<div class="muted">none recorded</div>{{end}}</td><td>{{range .GovernanceProposal.ImpactReceipt.Blockers}}<div>{{.}}</div>{{else}}<div class="muted">none recorded</div>{{end}}</td></tr></table>
 <div class="section-title"><h2>AI Governance Analyst</h2><span class="muted">No fake certainty</span></div>
 <div class="panel">
   <p>{{.GovernanceAnalyst}}</p>
