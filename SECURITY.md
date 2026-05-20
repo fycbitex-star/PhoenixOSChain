@@ -26,3 +26,24 @@ Report critical findings privately to the repository owner/operator team.
 3. RPC and public-surface abuse resistance
 4. indexer and explorer integrity
 5. mainnet launch discipline
+
+## Public Disclosure Boundary
+
+The public repository must not be used to disclose:
+
+- validator private keys
+- signer material
+- treasury signing paths
+- seed phrases
+- internal IP ranges
+- recovery bucket names or restore credentials
+- production webhook secrets
+- authentication tokens
+- private incident procedures that expose live attack paths
+
+Public publication should explain the system clearly without turning the repository into an operator compromise guide.
+
+## Public Materials Rule
+
+Architectural clarity is public.
+Operational secrets are not.

@@ -10,5 +10,9 @@ repository except where the governing license expressly allows it.
 All trademark, product identity, naming, visual branding, and market positioning
 rights are reserved separately from copyright.
 
+Public access to this repository does not grant access to production infrastructure,
+operational secrets, validator credentials, signer material, treasury controls, or
+deployment-sensitive security information.
+
 For commercial, OEM, redistribution, validator-program licensing, or derivative-work
 rights, obtain a separate written license from the rights holder.

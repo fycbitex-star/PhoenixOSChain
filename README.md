@@ -188,6 +188,14 @@ This repository is **source-available, not open source**.
 
 If you want commercial, OEM, derivative, or redistribution rights, obtain a separate written license from the rights holder.
 
+## Security Boundary
+
+This public repository does **not** include production secrets, validator private keys, signer material, treasury credentials, internal infrastructure topology, recovery credentials, or other production-sensitive operational details.
+
+Public code visibility does not imply operational disclosure.
+
+Materials in this repository are intentionally curated to explain the architecture without exposing the security boundary.
+
 ## Final Note
 
 PhoenixOSChain is published to make the direction obvious.
